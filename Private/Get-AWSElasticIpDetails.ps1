@@ -5,8 +5,6 @@ function Get-AWSElasticIpDetails {
         [string] $AWSSecretKey,
         [string] $AWSRegion
     )
-
-    $EIPDetailsList = New-Object System.Collections.ArrayList
     try {
         $EIPs = Get-EC2Address -AccessKey $AWSAccessKey -SecretKey $AWSSecretKey -Region $AWSRegion
     } catch {
@@ -15,7 +13,7 @@ function Get-AWSElasticIpDetails {
         return
     }
 
-    foreach ($eip in $EIPs) {
+    $EIPDetailsList = foreach ($eip in $EIPs) {
         $ElasticIP = [pscustomobject] @{
             "Name"              = $eip.Tags | Where-Object {$_.key -eq "Name"} | Select-Object -Expand Value
             "IP"                = $eip.PublicIp
@@ -23,7 +21,7 @@ function Get-AWSElasticIpDetails {
             "Network Interface" = $eip.NetworkInterfaceId
 
         }
-        [void]$EIPDetailsList.Add($ElasticIP)
+        $ElasticIP
     }
     return $EIPDetailsList
 }

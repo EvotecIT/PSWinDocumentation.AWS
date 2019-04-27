@@ -6,7 +6,6 @@ function Get-AWSRDSDetails {
         [string] $AWSRegion
     )
 
-    $RDSDetailsList = New-Object System.Collections.ArrayList
     try {
         $RDSInstances = Get-RDSDBInstance -AccessKey $AWSAccessKey -SecretKey $AWSSecretKey -Region $AWSRegion
     } catch {
@@ -15,7 +14,7 @@ function Get-AWSRDSDetails {
         return
     }
 
-    foreach ($instance in $RDSInstances) {
+    $RDSDetailsList = foreach ($instance in $RDSInstances) {
         $RDS = [pscustomobject] @{
             "Name"           = $instance.DBInstanceIdentifier
             "Class"          = $instance.DBInstanceClass
@@ -26,7 +25,7 @@ function Get-AWSRDSDetails {
             "Environment"    = Get-RDSTagForResource -AccessKey $AWSAccessKey -SecretKey $AWSSecretKey -Region $AWSRegion -ResourceName $instance.DBInstanceArn | Where-Object {$_.key -eq "Environment"} | Select-Object -Expand Value
 
         }
-        [void]$RDSDetailsList.Add($RDS)
+        $RDS
     }
     return $RDSDetailsList
 }

@@ -6,7 +6,7 @@ function Get-AWSIAMDetails {
         [string] $AWSRegion
     )
 
-    $IAMDetailsList = New-Object System.Collections.ArrayList
+
     try {
         $IAMUsers = Get-IAMUsers -AccessKey $AWSAccessKey -SecretKey $AWSSecretKey -Region $AWSRegion
     } catch {
@@ -15,7 +15,7 @@ function Get-AWSIAMDetails {
         return
     }
 
-    foreach ($user in $IAMUsers) {
+    $IAMDetailsList = foreach ($user in $IAMUsers) {
         $groupsTemp = (Get-IAMGroupForUser -UserName $user.UserName -AccessKey $AWSAccessKey -SecretKey $AWSSecretKey -Region $AWSRegion).GroupName
         $mfaTemp = (Get-IAMMFADevice -UserName $user.UserName -AccessKey $AWSAccessKey -SecretKey $AWSSecretKey -Region $AWSRegion).EnableDate
         $accessKeysCreationDateTemp = (Get-IAMAccessKey -UserName $user.UserName -AccessKey $AWSAccessKey -SecretKey $AWSSecretKey -Region $AWSRegion).CreateDate
@@ -27,7 +27,7 @@ function Get-AWSIAMDetails {
             "Access Keys Count"         = $accessKeysCreationDateTemp.Count
             "Access Keys Creation Date" = $accessKeysCreationDateTemp -join ", "
         }
-        [void]$IAMDetailsList.Add($IAMUser)
+        $IAMUser
     }
     return $IAMDetailsList
 }

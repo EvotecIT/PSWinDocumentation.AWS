@@ -6,7 +6,7 @@ function Get-AWSLBDetails {
         [string] $AWSRegion
     )
 
-    $LBDetailsList = New-Object System.Collections.ArrayList
+
     try {
         $ELBs = Get-ELBLoadBalancer -AccessKey $AWSAccessKey -SecretKey $AWSSecretKey -Region $AWSRegion # Classic Load Balancers
         $ALBs = Get-ELB2LoadBalancer -AccessKey $AWSAccessKey -SecretKey $AWSSecretKey -Region $AWSRegion # Application Load Balancers
@@ -16,25 +16,27 @@ function Get-AWSLBDetails {
         return
     }
 
-    foreach ($lb in $ELBs) {
-        $LB = [pscustomobject] @{
-            "Name"     = $lb.LoadBalancerName
-            "Type"     = "ELB"
-            "Scheme"   = $lb.Scheme
-            "DNS Name" = $lb.DNSName
-            "Targets"  = $lb.Instances.InstanceId -join ", "
+    $LBDetailsList = @(
+        foreach ($lb in $ELBs) {
+            $LB = [pscustomobject] @{
+                "Name"     = $lb.LoadBalancerName
+                "Type"     = "ELB"
+                "Scheme"   = $lb.Scheme
+                "DNS Name" = $lb.DNSName
+                "Targets"  = $lb.Instances.InstanceId -join ", "
+            }
+            $LB
         }
-        [void]$LBDetailsList.Add($LB)
-    }
-    foreach ($lb in $ALBs) {
-        $LB = [pscustomobject] @{
-            "Name"     = $lb.LoadBalancerName
-            "Type"     = "ALB"
-            "Scheme"   = $lb.Scheme
-            "DNS Name" = $lb.DNSName
-            "Targets"  = "Dynamic Routing"
+        foreach ($lb in $ALBs) {
+            $LB = [pscustomobject] @{
+                "Name"     = $lb.LoadBalancerName
+                "Type"     = "ALB"
+                "Scheme"   = $lb.Scheme
+                "DNS Name" = $lb.DNSName
+                "Targets"  = "Dynamic Routing"
+            }
+            $LB
         }
-        [void]$LBDetailsList.Add($LB)
-    }
+    )
     return $LBDetailsList
 }

@@ -12,7 +12,7 @@
     RootModule = 'PSWinDocumentation.AWS.psm1'
 
     # Version number of this module.
-    ModuleVersion = '0.0.1'
+    ModuleVersion = '0.0.2'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -30,7 +30,7 @@
     Copyright = 'Evotec (c) 2011-2019. All rights reserved.'
 
     # Description of the functionality provided by this module
-    Description = 'Dataset for AWS'
+    Description = 'Dataset convering Amazon AWS'
 
     # Minimum version of the Windows PowerShell engine required by this module
     PowerShellVersion = '5.1'
@@ -95,7 +95,7 @@
         PSData = @{
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags = 'windows', 'aws'
+            Tags = 'windows', 'aws', 'amazon'
 
             # A URL to the license for this module.
             # LicenseUri = ''

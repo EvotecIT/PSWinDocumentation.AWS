@@ -5,9 +5,6 @@ function Get-AWSEC2Details {
         [string] $AWSSecretKey,
         [string] $AWSRegion
     )
-
-    $EC2DetailsList = New-Object System.Collections.ArrayList
-
     try {
         $EC2Instances = Get-EC2Instance -AccessKey $AWSAccessKey -SecretKey $AWSSecretKey -Region $AWSRegion
     } catch {
@@ -15,8 +12,7 @@ function Get-AWSEC2Details {
         Write-Warning "Get-AWSEC2Details - Error: $ErrorMessage"
         return
     }
-
-    foreach ($instance in $EC2Instances) {
+    $EC2DetailsList = foreach ($instance in $EC2Instances) {
         $ec2 = [pscustomobject] @{
             'Instance ID'   = $instance[0].Instances[0].InstanceId
             "Instance Name" = $instance[0].Instances[0].Tags | Where-Object {$_.key -eq "Name"} | Select-Object -Expand Value
@@ -25,7 +21,7 @@ function Get-AWSEC2Details {
             "Private IP"    = $instance[0].Instances[0].PrivateIpAddress
             "Public IP"     = $instance[0].Instances[0].PublicIpAddress
         }
-        [void]$EC2DetailsList.Add($ec2)
+        $ec2
     }
     return $EC2DetailsList
 }
