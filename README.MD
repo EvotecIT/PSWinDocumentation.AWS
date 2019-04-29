@@ -29,6 +29,21 @@ Read-Only policy can be found in `Data/PSWinDocumentation-Policy.json`.
 
 `Please make sure that tagged items as a [tag] must be filled on AWS side. Otherwise these values will be empty.`
 
+
+```PowerShell
+Import-Module AWSPowerShell
+Import-Module PSWinDocumentation.AWS.psd1 -Force
+
+$Configuration = [ordered] @{
+    AWSAccessKey = ''
+    AWSSecretKey = ''
+    AWSRegion    = 'eu-west-1'
+}
+
+$AWS = Get-WinAWSInformation -AWSAccessKey $Configuration.AWSAccessKey -AWSSecretKey $Configuration.AWSSecretKey -AWSRegion $Configuration.AWSRegion
+$AWS
+```
+
 ## EC2 Details
 
 Returns list of EC2 instance details:
